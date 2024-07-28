@@ -95,27 +95,40 @@
             color: #333;
         }
         .witty-lines {
-            margin-top: 20px;
-            font-size: 18px; /* Increased font size for visibility */
-            color: #333; /* Darker color for better contrast */
-            height: 100px; /* Increased height to fit the lines */
+            margin-top: 5px;
+            font-size: 18px;
+            color: #333;
+            height: 100px;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column; /* Stack lines vertically */
+            position: relative;
+            width: 250px; /* Increased width */
         }
         .witty-line {
+            position: absolute;
             opacity: 0;
-            animation: fadeInOut 9s linear infinite;
+            animation: fadeInOut 21s linear infinite;
             font-style: italic;
-            margin: 10px 0;
-            font-weight: bold; /* Bold for better visibility */
+            font-weight: bold;
         }
         .witty-line:nth-child(2) {
             animation-delay: 3s;
         }
         .witty-line:nth-child(3) {
             animation-delay: 6s;
+        }
+        .witty-line:nth-child(4) {
+            animation-delay: 9s;
+        }
+        .witty-line:nth-child(5) {
+            animation-delay: 12s;
+        }
+        .witty-line:nth-child(6) {
+            animation-delay: 15s;
+        }
+        .witty-line:nth-child(7) {
+            animation-delay: 18s;
         }
         @keyframes fadeInOut {
             0%, 20%, 100% { opacity: 0; }
@@ -142,9 +155,14 @@
         <div class="spinner"></div>
         <div class="loading-text">Scraping data...</div>
         <div class="witty-lines">
-            <p class="witty-line">Finding needles in the digital haystack...</p>
-            <p class="witty-line">Polishing up the crystal ball...</p>
-            <p class="witty-line">Cracking the codes of the internet...</p>
+            <p class="witty-line">Finding needles in the digital haystack🔎</p>
+            <p class="witty-line">Polishing up the crystal ball🔮</p>
+            <p class="witty-line">Cracking the codes of the internet🪄</p>
+            <p class="witty-line">Turning over every digital stone🪨</p>
+            <p class="witty-line">Peeking behind the online curtain 🎭</p>
+            <p class="witty-line">Connecting the dots of your digital footprint 🌐</p>
+            <p class="witty-line">Diving deep into the data ocean 🌊</p>
+
         </div>
     </div>
 
