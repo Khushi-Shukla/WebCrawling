@@ -1,0 +1,9 @@
+Flask
+selenium
+beautifulsoup4
+googlesearch-python
+facebook-scraper
+webdriver-manager
+parsel
+lxml_html_clean
+instaloader

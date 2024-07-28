@@ -7,22 +7,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from fake_useragent import UserAgent
 from parsel import Selector
 import time
 import csv
 import random
 import pickle
-
-# # defining new variable passing two parameters
-# writer = csv.writer(open("linkedin", 'wb'))
-
-# # writerow() method to the write to the file object
-# writer.writerow(['Name', 'Job Title', 'Company', 'College', 'Location', 'URL'])
-
-# with open( 'w', newline='') as file:
-#     writer = csv.writer(file)
-#     # writerow() method to write to the file object
-#     writer.writerow(['Name', 'Job Title', 'Company', 'College', 'Location', 'URL'])
 
 
 with open('linkedin_data.csv', 'w', newline='', encoding='utf-8') as csvfile:
@@ -38,29 +28,62 @@ linkedin_username = 'tzw57355@tccho.com'
 linkedin_password = 'vBAEqMvPYfSG27!'
 # 'faemlfpqvpnxrevjei@ckptr.com' 'Abcd@1234'
 
-proxy = "103.177.176.62:8080" 
+
+def get_fake_user_agent():
+    ua = UserAgent()
+    return ua.random
 
 # Set up Chrome options
-chrome_options = Options()
-# chrome_options.add_argument("--headless")  # Run in headless mode
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
-# chrome_options.add_argument(f'--proxy-server={proxy}')
+# chrome_options = Options()
+# # chrome_options.add_argument("--headless")  # Run in headless mode
+# chrome_options.add_argument("--no-sandbox")
+# chrome_options.add_argument('--ignore-certificate-errors')
+# chrome_options.add_argument("--disable-dev-shm-usage")
+# chrome_options.add_argument(f"user-agent={get_fake_user_agent()}")    
+# service = Service(ChromeDriverManager().install())
+# chrome_options.add_argument("--disable-gpu") 
+# chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
+# # Set up ChromeDriver
+# # driver = webdriver.Chrome()
+# driver = webdriver.Chrome(service=service, options=chrome_options)
 
-# Set up ChromeDriver
+
+# Set up Chrome options
+driver = None
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # Run in headless mode
+chrome_options.add_argument("--no-sandbox")
+# chrome_options.add_argument('--ignore-certificate-errors')
+# chrome_options.add_argument("--disable-dev-shm-usage")
+# chrome_options.add_argument(f"user-agent={get_fake_user_agent()}")    
+# chrome_options.add_argument("--disable-gpu") 
+chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
+service = Service(ChromeDriverManager().install())
 # driver = webdriver.Chrome()
-driver = webdriver.Chrome( options=chrome_options)
+driver = webdriver.Chrome(service=service, options=chrome_options)
+
+
+def main():
+    urls = [
+        # 'https://in.linkedin.com/in/rajeshpremchandran', 
+        # 'https://in.linkedin.com/in/rajesh-uppalapati-1368a91', 
+        # 'https://in.linkedin.com/in/rajeshshah910', 
+        # 'https://in.linkedin.com/in/rajeshrajgor', 
+        # 'https://www.linkedin.com/in/rajeshahuja12', 
+        # 'https://in.linkedin.com/in/thyagar'
+    ]
+    
+    gettingLinkedinData(urls)
 
 # function to ensure all key data fields have a value
 def validate_field(field):# if field is present pass 
     if field:pass
-# if field is not present print text 
     else:
        field = 'No results'
     return field
 
 def login_to_linkedin(username, password):
+    global driver
     driver.get('https://www.linkedin.com/login')
     time.sleep(random.uniform(3,6))  # Wait for the page to load
 
@@ -92,9 +115,15 @@ def load_cookies(driver):
 # load_cookies(driver) 
 
 def linkedinScraper(username):   
+    global driver
     url = "https://uk.linkedin.com/in/"+username
     driver.get(url)
     time.sleep(random.uniform(3,6))  # Wait for the page to load
+    
+    # Reload the page to ensure cookies are used
+    driver.refresh()
+    time.sleep(random.uniform(3, 6))  # Wait for the page to load
+    
     # assigning the source code for the webpage to variable sel
     sel = Selector(text=driver.page_source) 
     # xpath to extract the text from the class containing the name
@@ -146,23 +175,36 @@ def linkedinScraper(username):
     linkedin_url = validate_field(linkedin_url)
     
     # printing the output to the terminal
-    print('\n')
-    print('Name: ' + name)
-    print('Job Title: ' + job_title)
-    print('Company: ' + company)
-    print('College: ' + college)
-    print('Location: ' + location)
-    print('URL: ' + linkedin_url)
-    print('\n')
+    # print('\n')
+    # print('Name: ' + name)
+    # print('Job Title: ' + job_title)
+    # print('Company: ' + company)
+    # print('College: ' + college)
+    # print('Location: ' + location)
+    # print('URL: ' + linkedin_url)
+    # print('\n')    
     
+        
+    data = {
+        'Name': name,
+        'Job Title': job_title,
+        'Company': company,
+        'College': college,
+        'Location': location,
+        'URL': linkedin_url
+    }
     
     with open('linkedin_data.csv', 'a', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerow([name,job_title,
-                    company,
-                    college,
-                    location,
-                    linkedin_url])
+        writer.writerow([name,job_title, company, college, location, linkedin_url])
+    
+    print('\nScraped data:')
+    for key, value in data.items():
+        print(f'{key}: {value}')
+    
+    print(type(data), " --Info type")
+    return data
+
           
 def extractingUsername(linkedin_urls):
     linkedin_usernames = []
@@ -178,31 +220,50 @@ def extractingUsername(linkedin_urls):
     return linkedin_usernames
 
 def gettingLinkedinData(urls):
-    # Login to LinkedIn
-    login_to_linkedin(linkedin_username, linkedin_password)
-    load_cookies(driver) 
-    print("Inside linkedin scrapper")
-    users=[]
-    users = extractingUsername(urls)
-    print(users)
+    global driver    
+    if driver:
+        try:        
+            # Login to LinkedIn
+            login_to_linkedin(linkedin_username, linkedin_password)
+            load_cookies(driver) 
+            linkedinInfo = []
+            print("Inside linkedin scrapper")
+            users=[]
+            users = extractingUsername(urls)
+            print(users)
 
-    for user in users:
-        print(f'---------Extracting info of {user}:---------')
-        linkedinScraper(user)
-        time.sleep(random.uniform(5,10))  # Wait for the page to load
+            for user in users:
+                print(f'---------Extracting info of {user}:---------')
+                print(type(linkedinInfo), " linkddd ", type(users) )
+                info=linkedinScraper(user)
+                if info: 
+                    linkedinInfo.append(info)
+                else:
+                    print("Data not returned properly")
+                time.sleep(random.uniform(5,10))  # Wait for the page to load
+            return linkedinInfo
+        except Exception as e:
+            print(f"Error during data scraping: {e}")
+            return None
+        finally:
+            driver.quit()
+                        
+    else:
+        return "Failed to initialize WebDriver"
 
-        
 
-# linkedinScraper('arvindakshanrajesh')
-# gettingLinkedinData([ 'https://in.linkedin.com/in/rajesh-ramakrishnan-2bb33b22', 'https://in.linkedin.com/in/rajeshpremchandran', 'https://in.linkedin.com/in/rajesh-uppalapati-1368a91', 'https://in.linkedin.com/in/rajeshshah910', 'https://in.linkedin.com/in/rajeshrajgor', 'https://www.linkedin.com/in/rajeshahuja12', 'https://in.linkedin.com/in/thyagar'])
 
-gettingLinkedinData([ 'https://in.linkedin.com/in/rajesh-ramakrishnan-2bb33b22'])
+if __name__ == "__main__":
+    main()
+    
+    
+# gettingLinkedinData([ 'https://in.linkedin.com/in/rajesh-ramakrishnan-2bb33b22', 'https://www.linkedin.com/in/arvindakshanrajesh', 'https://uk.linkedin.com/in/pauljgarner' , 'https://www.linkedin.com/in/tawny-rodriguez'])
 
 # https://www.linkedin.com/in/arvindakshanrajesh
 # https://uk.linkedin.com/in/pauljgarner
 # https://www.linkedin.com/in/tawny-rodriguez
 # terminates the application
-driver.quit()
+# driver.quit()
 
 
 # OBSERVATIONS
@@ -217,3 +278,6 @@ driver.quit()
     # College: No results
     # Location: No results
     # URL: https://www.linkedin.com/authwall?trk=qf&original_referer=&sessionRedirect=https%3A%2F%2Fuk.linkedin.com%2Fin%2Farvindakshanrajesh    
+
+
+
