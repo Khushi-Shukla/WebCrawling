@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Profiler</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            overflow: hidden;
+        }
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+            transition: transform 0.3s;
+            width: 300px;
+            box-sizing: border-box;
+        }
+        .form-container:hover {
+            transform: scale(1.05);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 16px;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus, select:focus {
+            border-color: #74ebd5;
+            outline: none;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #74ebd5;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #ACB6E5;
+            transform: scale(1.1);
+        }
+        .loading-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #74ebd5;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+        .witty-lines {
+            margin-top: 20px;
+            font-size: 18px; /* Increased font size for visibility */
+            color: #333; /* Darker color for better contrast */
+            height: 100px; /* Increased height to fit the lines */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Stack lines vertically */
+        }
+        .witty-line {
+            opacity: 0;
+            animation: fadeInOut 9s linear infinite;
+            font-style: italic;
+            margin: 10px 0;
+            font-weight: bold; /* Bold for better visibility */
+        }
+        .witty-line:nth-child(2) {
+            animation-delay: 3s;
+        }
+        .witty-line:nth-child(3) {
+            animation-delay: 6s;
+        }
+        @keyframes fadeInOut {
+            0%, 20%, 100% { opacity: 0; }
+            10%, 17% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Web Profiler</h1>
+        <form id="profile-form" action="/profile" method="post">
+            <label for="input_type">Choose input type:</label>
+            <select id="input_type" name="input_type">
+                <option value="email">Email</option>
+                <option value="phone">Phone Number</option>
+            </select>
+            <label for="input_value">Enter your value:</label>
+            <input type="text" id="input_value" name="input_value" required>
+            <input type="submit" value="Search">
+        </form>
+    </div>
+
+    <div class="loading-screen" id="loading-screen">
+        <div class="spinner"></div>
+        <div class="loading-text">Scraping data...</div>
+        <div class="witty-lines">
+            <p class="witty-line">Finding needles in the digital haystack...</p>
+            <p class="witty-line">Polishing up the crystal ball...</p>
+            <p class="witty-line">Cracking the codes of the internet...</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('profile-form').addEventListener('submit', function(event) {
+            document.getElementById('loading-screen').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
