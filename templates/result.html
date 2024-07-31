@@ -104,6 +104,18 @@
 <body>
     <h1>Profile Results</h1>
     <a href="#" class="print-button" onclick="window.print(); return false;">Print Results</a>
+    {% if input_type == 'phone' %}
+        <div class="section-title">Phone Number Details</div>
+        {% for detail in phone_data %}
+            <div class="profile-container">
+                <div class="profile-details">
+                    {% for key, value in detail.items() %}
+                        <div><strong>{{ key }}:</strong> {{ value }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
     {% for platform_data in data %}
         {% if platform_data %}
             <div class="section-title">

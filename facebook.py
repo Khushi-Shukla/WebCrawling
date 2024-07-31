@@ -137,7 +137,9 @@ def gettingScrapedData(urls):
     fbInfo=[]
     for user in users:
         print(f'---------Extracting info of {user}:---------')
-        fbInfo.append(fbScraping(user))
+        userdata=fbScraping(user)
+        if userdata:
+            fbInfo.append(userdata)
         print(fbInfo, " Facebook info")
     return fbInfo
     
