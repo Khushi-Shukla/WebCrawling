@@ -1,7 +1,8 @@
 from googlesearch import search
-
+import os
 
 def google_dorking_email(email):
+    os.system("ipconfig /renew")
     social_media_sites = ["https://www.linkedin.com", "https://www.facebook.com", "https://www.instagram.com"]
     urls = []
     
