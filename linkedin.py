@@ -13,7 +13,29 @@ import time
 import csv
 import random
 import pickle
+import subprocess
 
+# def changeIP():
+    
+#     # Define the new IP address, subnet mask, and gateway
+#     new_ip = "192.168.1."+str(random.randint(3,100))
+#     subnet_mask = "255.255.255.0"
+#     gateway = "192.168.1.1"
+#     interface = "Wi-Fi"  # The name of the network interface you want to change
+
+#     # Construct the netsh command
+#     command = f"netsh interface ip set address name={interface} static {new_ip} {subnet_mask} {gateway}"
+
+#     # Run the command
+#     result = subprocess.run(command, shell=True, capture_output=True, text=True)
+
+#     # Check the result
+#     if result.returncode == 0:
+#         print("IP address changed successfully to: ", new_ip)
+#     else:
+#         print("Failed to change IP address.")
+#         print(result.stderr)
+        
 
 with open('linkedin_data.csv', 'w', newline='', encoding='utf-8') as csvfile:
     writer = csv.writer(csvfile)
@@ -53,10 +75,10 @@ driver = None
 chrome_options = Options()
 chrome_options.add_argument("--headless")  # Run in headless mode
 chrome_options.add_argument("--no-sandbox")
-# chrome_options.add_argument('--ignore-certificate-errors')
-# chrome_options.add_argument("--disable-dev-shm-usage")
-# chrome_options.add_argument(f"user-agent={get_fake_user_agent()}")    
-# chrome_options.add_argument("--disable-gpu") 
+chrome_options.add_argument('--ignore-certificate-errors')
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument(f"user-agent={get_fake_user_agent()}")    
+chrome_options.add_argument("--disable-gpu") 
 chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
 service = Service(ChromeDriverManager().install())
 # driver = webdriver.Chrome()
@@ -73,7 +95,7 @@ def main():
         # 'https://in.linkedin.com/in/thyagar'
     ]
     
-    gettingLinkedinData(urls)
+    # gettingLinkedinData(urls)
 
 # function to ensure all key data fields have a value
 def validate_field(field):# if field is present pass 
@@ -113,6 +135,7 @@ def load_cookies(driver):
 
 # login_to_linkedin(linkedin_username, linkedin_password)
 # load_cookies(driver) 
+
 
 def linkedinScraper(username):   
     global driver
@@ -219,10 +242,19 @@ def extractingUsername(linkedin_urls):
         
     return linkedin_usernames
 
+def allGood(info):
+    #checks if not all the values have no result
+    if all(value == 'No results' for key, value in info.items() if key != 'URL'):
+        # login_to_linkedin(linkedin_username, linkedin_password)
+        # load_cookies(driver)
+        return False
+    return True
+
 def gettingLinkedinData(urls):
     global driver    
     if driver:
-        try:        
+        try:  
+            # changeIP()      
             # Login to LinkedIn
             login_to_linkedin(linkedin_username, linkedin_password)
             load_cookies(driver) 
@@ -236,7 +268,9 @@ def gettingLinkedinData(urls):
                 print(f'---------Extracting info of {user}:---------')
                 print(type(linkedinInfo), " linkddd ", type(users) )
                 info=linkedinScraper(user)
-                if info: 
+                if(not allGood(info)): 
+                    time.sleep(10)                
+                if info and allGood(info): 
                     linkedinInfo.append(info)
                 else:
                     print("Data not returned properly")

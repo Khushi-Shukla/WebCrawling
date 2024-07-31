@@ -46,16 +46,17 @@ def getInstaInfo(urls):
         match = pattern.search(url)
         if match:
             usernames.append(match.group(1))
+    print(usernames)
     
     for username in usernames:
         info = get_instagram_profile_info(username)
-        instaData.append(info)
         if info:
+            instaData.append(info)
             print(f"Profile Information for {username}:")
             for key, value in info.items():
                 print(f"{key}: {value}")
             print("\n")
-        return instaData
+    return instaData
 
 # Example usage
 # urls = [
@@ -64,4 +65,8 @@ def getInstaInfo(urls):
 #     'https://www.instagram.com/anotheruser/?hl=en'
 # ]
 
+# 'https://www.instagram.com/anujpanditsharma/?hl=en', 'https://www.instagram.com/anujrawat_1755/?hl=en', 'https://www.instagram.com/imanujduttaa/?hl=en', 'https://www.instagram.com/accounts/login/?hl=en', 'https://www.instagram.com/nazilx/?hl=en', 'https://www.instagram.com/anurag_dobhal/'
+# ]
 # extract_usernames(urls)
+# getInstaInfo(urls)
+# getInstaInfo(['https://www.instagram.com/arpanasharon/?hl=en', 'https://www.instagram.com/arpanaaaa_/?hl=en'])
